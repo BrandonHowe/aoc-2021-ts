@@ -26,7 +26,6 @@ const part2 = (input: number[]) => {
 
 const main = async () => {
     const input = await readInputSplitNum(path.join(__dirname, "./input.txt"));
-    input.pop();
     console.log(input);
 
     console.time("part1");

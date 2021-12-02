@@ -41,7 +41,6 @@ const part2 = (input: string[][]) => {
 
 const main = async () => {
     const input = await readInputSplit(path.join(__dirname, "./input.txt"));
-    input.pop();
     const dirs = input.map(l => l.split(" "));
     console.log(input);
 
