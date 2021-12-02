@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "day1": "ts-node -T src/day1/index.ts",
-    "day2": "ts-node -T src/day2/index.ts",
+    "day2": "ts-node -T --files src/day2/index.ts",
     "day3": "ts-node -T src/day3/index.ts",
     "day4": "ts-node -T src/day4/index.ts",
     "day5": "ts-node -T src/day5/index.ts",
@@ -33,6 +33,8 @@
   "author": "ImperialWater",
   "license": "ISC",
   "devDependencies": {
+    "@swc/core": "^1.2.116",
+    "@swc/helpers": "^0.2.14",
     "@types/node": "^14.14.7",
     "@typescript-eslint/eslint-plugin": "^4.7.0",
     "@typescript-eslint/parser": "^4.7.0",
@@ -45,6 +47,7 @@
     "eslint-plugin-promise": "^4.2.1",
     "eslint-plugin-standard": "^4.0.1",
     "prettier": "^2.1.2",
+    "regenerator-runtime": "^0.13.9",
     "ts-node": "^9.0.0",
     "typescript": "^4.0.5"
   }
