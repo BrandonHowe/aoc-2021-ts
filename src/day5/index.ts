@@ -72,7 +72,9 @@ const part2 = (input: [number, number][][]) => {
                 const goingDown = right[1] < left[1] ? -1 : 1;
                 // console.log(`${left[0] + i}|${left[1] + i * goingDown}`);
                 const shi = stuff[`${left[0] + i}|${left[1] + i * goingDown}`];
-                stuff[`${left[0] + i}|${left[1] + i * goingDown}`] = shi ? shi + 1 : 1;
+                stuff[`${left[0] + i}|${left[1] + i * goingDown}`] = shi
+                    ? shi + 1
+                    : 1;
             }
         }
     }
