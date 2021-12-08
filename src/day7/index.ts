@@ -5,7 +5,10 @@ const part1 = (input: number[]) => {
     let leastFuelCount = 9999999;
     let leastFuelCountIdx = -1;
     for (let i = 0; i < Math.max(...input); i++) {
-        const totalCost = input.reduce((acc, cur) => acc + Math.abs(cur - i), 0);
+        const totalCost = input.reduce(
+            (acc, cur) => acc + Math.abs(cur - i),
+            0
+        );
         if (totalCost < leastFuelCount) {
             leastFuelCount = totalCost;
             leastFuelCountIdx = i;
@@ -18,7 +21,14 @@ const part2 = (input: number[]) => {
     let leastFuelCount = 99999999999999999999999999999999999;
     let leastFuelCountIdx = -1;
     for (let i = 0; i < Math.max(...input); i++) {
-        const totalCost = input.reduce((acc, cur) => acc + Math.abs((Math.pow(Math.abs(cur - i), 2) + (Math.abs(cur - i))) / 2), 0);
+        const totalCost = input.reduce(
+            (acc, cur) =>
+                acc +
+                Math.abs(
+                    (Math.pow(Math.abs(cur - i), 2) + Math.abs(cur - i)) / 2
+                ),
+            0
+        );
         // console.log(input.map((cur) => Math.abs((Math.pow(Math.abs(cur - i), 2) + (Math.abs(cur - i))) / 2), 0));
         // console.log(totalCost, i);
         if (totalCost < leastFuelCount) {
@@ -30,7 +40,9 @@ const part2 = (input: number[]) => {
 };
 
 const main = async () => {
-    const input = (await readInputRaw(path.join(__dirname, "./input.txt"))).split(",").map(Number);
+    const input = (await readInputRaw(path.join(__dirname, "./input.txt")))
+        .split(",")
+        .map(Number);
 
     console.time("part1");
 
