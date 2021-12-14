@@ -11,10 +11,14 @@ type Input = {
 
 const displayPoints = (points: number[][]) => {
     const width =
-        Math.max(...points.map(l => l[0])) - Math.min(...points.map(l => l[0])) + 1;
+        Math.max(...points.map(l => l[0])) -
+        Math.min(...points.map(l => l[0])) +
+        1;
     const minW = Math.min(...points.map(l => l[0]));
     const height =
-        Math.max(...points.map(l => l[1])) - Math.min(...points.map(l => l[1])) + 1;
+        Math.max(...points.map(l => l[1])) -
+        Math.min(...points.map(l => l[1])) +
+        1;
     const minH = Math.min(...points.map(l => l[0]));
 
     let res = "";
@@ -31,7 +35,7 @@ const displayPoints = (points: number[][]) => {
     }
 
     return res;
-}
+};
 
 const part1 = (input: Input) => {
     let points = [...input.points.map(l => [...l])];
