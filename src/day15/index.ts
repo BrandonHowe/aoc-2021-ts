@@ -5,24 +5,25 @@ import { readInputSplit } from "../helpers/readInput";
 type Input = number[][];
 
 const part1 = (input: Input) => {
-    let q: string[] = [];
+    const q: Set<string> = new Set();
     const dist: Record<string, number> = {};
 
     for (let i = 0; i < input.length; i++) {
         for (let j = 0; j < input[i].length; j++) {
-            q.push(`${i}|${j}`);
-            dist[`${i}|${j}`] = 999999;
+            q.add(`${i}|${j}`);
+            dist[`${i}|${j}`] = Infinity;
         }
     }
 
     dist["0|0"] = 0;
 
-    while (q.length !== 0) {
-        const current = q.sort((a, b) => dist[a] - dist[b])[0].split("|").map(Number);
+    const queue: [[number, number], number][] = [[[0, 0], 0]];
 
-        q = q.filter(l => l !== current.join("|"));
+    while (queue.length !== 0) {
+        // console.log(queue);
+        const [current, distance] = queue.shift()!;
 
-        const neighbors = [
+        const neighbors: [number, number][] = [
             [current[0] + 1, current[1]],
             [current[0] - 1, current[1]],
             [current[0], current[1] + 1],
@@ -30,13 +31,35 @@ const part1 = (input: Input) => {
         ];
 
         for (const neighbor of neighbors) {
-            if (!q.includes(neighbor.join("|"))) continue;
-            if (neighbor[0] < 0 || neighbor[1] < 0 || neighbor[0] >= input.length || neighbor[1] >= input.length) {
+            if (!q.has(neighbor.join("|"))) continue;
+            if (
+                neighbor[0] < 0 ||
+                neighbor[1] < 0 ||
+                neighbor[0] >= input.length ||
+                neighbor[1] >= input.length
+            ) {
                 continue;
             }
-            const alt = dist[current.join("|")] + input[neighbor[0]][neighbor[1]];
-            if (alt < dist[neighbor.join("|")]) {
-                dist[neighbor.join("|")] = alt;
+            const totalDist = distance + input[neighbor[0]][neighbor[1]];
+            if (totalDist < dist[neighbor.join("|")]) {
+                dist[neighbor.join("|")] = totalDist;
+                if (queue.length === 0) {
+                    queue.push([neighbor, totalDist]);
+                } else {
+                    let added = false;
+                    for (let i = 0; i < queue.length; i++) {
+                        // console.log(queue[i][1], queue[i - 1]?.[1], totalDist);
+                        if (queue[i][1] > totalDist) {
+                            queue.splice(i, 0, [neighbor, totalDist]);
+                            // console.log(queue);
+                            added = true;
+                            break;
+                        }
+                    }
+                    if (!added) {
+                        queue.push([neighbor, totalDist]);
+                    }
+                }
             }
         }
     }
@@ -46,18 +69,24 @@ const part1 = (input: Input) => {
 
 const part2 = (input: Input) => {
     for (const row of input) {
-        for (let i = 1; i <= 5; i++) {
-            const mapped = row.map(l => l + i > 9 ? l + i - 9 : l + i);
+        const oldRow = [...row];
+        for (let i = 1; i < 5; i++) {
+            const mapped = oldRow.map(l => (l + i > 9 ? l + i - 9 : l + i));
             row.push(...mapped);
         }
     }
+
+    console.log(input.length, input[0].length);
     const newInput = [...input];
-    for (let i = 1; i <= 5; i++) {
+    for (let i = 1; i < 5; i++) {
         const mapped = input.map(l =>
             l.map(j => (j + i > 9 ? j + i - 9 : j + i))
         );
         newInput.push(...mapped);
     }
+
+    // console.log(displayGridFuncConfig(newInput));
+    console.log(newInput.length, newInput[0].length);
 
     return part1(newInput);
 };
@@ -68,7 +97,7 @@ const main = async () => {
 
     console.time("part1");
 
-    // console.log(part1(input));
+    console.log(part1(input));
 
     console.timeEnd("part1");
 
