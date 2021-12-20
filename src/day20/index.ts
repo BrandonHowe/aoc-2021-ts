@@ -21,8 +21,8 @@ const displayGrid = (input: Input) => {
     );
 
     let res = "";
-    for (let i = minX - 3; i < maxX + 4; i++) {
-        for (let j = minY - 3; j < maxY + 4; j++) {
+    for (let i = minX - 1; i < maxX + 2; i++) {
+        for (let j = minY - 1; j < maxY + 2; j++) {
             res += input.grid[`${j}|${i}`] ? "#" : ".";
         }
         res += "\n";
@@ -118,16 +118,17 @@ const part2 = (input: Input) => {
         ...Object.keys(input.grid).map(l => Number(l.split("|")[1]))
     );
 
-    const getEnhanced = (x: number, y: number, def: "#" | "."): "#" | "." => {
-        const upLeft = input.grid[`${x - 1}|${y - 1}`] ? "#" : def;
-        const up = input.grid[`${x}|${y - 1}`] ? "#" : def;
-        const upRight = input.grid[`${x + 1}|${y - 1}`] ? "#" : def;
-        const left = input.grid[`${x - 1}|${y}`] ? "#" : def;
-        const center = input.grid[`${x}|${y}`] ? "#" : def;
-        const right = input.grid[`${x + 1}|${y}`] ? "#" : def;
-        const downLeft = input.grid[`${x - 1}|${y + 1}`] ? "#" : def;
-        const down = input.grid[`${x}|${y + 1}`] ? "#" : def;
-        const downRight = input.grid[`${x + 1}|${y + 1}`] ? "#" : def;
+    const getEnhanced = (x: number, y: number, def: "#" | ".", iter: number): "#" | "." => {
+        console.log(x, y, iter);
+        const upLeft = input.grid[`${x - 1}|${y - 1}`] ? "#" : (x - 1 < -iter || y - 1 < -iter ? def : ".");
+        const up = input.grid[`${x}|${y - 1}`] ? "#" : (y - 1 < -iter ? def : ".");
+        const upRight = input.grid[`${x + 1}|${y - 1}`] ? "#" : (x + 1 > maxX_+ iter || y - 1 < -iter ? def : ".");
+        const left = input.grid[`${x - 1}|${y}`] ? "#" : (x - 1 < -iter ? def : ".");
+        const center = input.grid[`${x}|${y}`] ? "#" : ".";
+        const right = input.grid[`${x + 1}|${y}`] ? "#" : (x + 1 > maxX_ + iter ? def : ".");
+        const downLeft = input.grid[`${x - 1}|${y + 1}`] ? "#" : (x - 1 < -iter || y + 1 > maxY_ + iter ? def : ".");
+        const down = input.grid[`${x}|${y + 1}`] ? "#" : (y + 1 > maxY_ + iter ? def : ".");
+        const downRight = input.grid[`${x + 1}|${y + 1}`] ? "#" : (x + 1 > maxX_ + iter || y + 1 > maxY_ + iter ? def : ".");
         const str = [
             upLeft,
             up,
@@ -162,9 +163,9 @@ const part2 = (input: Input) => {
             ...Object.keys(input.grid).map(l => Number(l.split("|")[1]))
         );
 
-        for (let i = minX - 2; i < maxX + 3; i++) {
-            for (let j = minY - 2; j < maxY + 3; j++) {
-                const enhanced = getEnhanced(i, j, iter % 2 === 0 ? "." : "#");
+        for (let i = minX - 1; i < maxX + 2; i++) {
+            for (let j = minY - 1; j < maxY + 2; j++) {
+                const enhanced = getEnhanced(i, j, iter % 2 === 0 ? "." : "#", iter);
                 newGrid[`${i}|${j}`] = enhanced === "#";
             }
         }
@@ -191,6 +192,8 @@ const part2 = (input: Input) => {
     for (let i = 0; i < 50; i++) {
         input.grid = enhance(i);
     }
+
+    console.log(displayGrid(input));
 
     return Object.entries(input.grid)
         .filter(l => {
