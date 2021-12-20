@@ -1,26 +1,235 @@
 import * as path from "path";
-import { readInputSplitNum } from "../helpers/readInput";
+import { readInputSplit } from "../helpers/readInput";
 
-const part1 = (input: number[]) => {
-
+type Input = {
+    alg: string;
+    grid: Record<string, boolean>;
 };
 
-const part2 = (input: number[]) => {
+const displayGrid = (input: Input) => {
+    const minX = Math.min(
+        ...Object.keys(input.grid).map(l => Number(l.split("|")[0]))
+    );
+    const minY = Math.min(
+        ...Object.keys(input.grid).map(l => Number(l.split("|")[1]))
+    );
+    const maxX = Math.max(
+        ...Object.keys(input.grid).map(l => Number(l.split("|")[0]))
+    );
+    const maxY = Math.max(
+        ...Object.keys(input.grid).map(l => Number(l.split("|")[1]))
+    );
 
+    let res = "";
+    for (let i = minX - 3; i < maxX + 4; i++) {
+        for (let j = minY - 3; j < maxY + 4; j++) {
+            res += input.grid[`${j}|${i}`] ? "#" : ".";
+        }
+        res += "\n";
+    }
+    return res;
+};
+
+const part1 = (input: Input) => {
+    const maxX_ = Math.max(
+        ...Object.keys(input.grid).map(l => Number(l.split("|")[0]))
+    );
+    const maxY_ = Math.max(
+        ...Object.keys(input.grid).map(l => Number(l.split("|")[1]))
+    );
+
+    const getEnhanced = (x: number, y: number): "#" | "." => {
+        const upLeft = input.grid[`${x - 1}|${y - 1}`] ? "#" : ".";
+        const up = input.grid[`${x}|${y - 1}`] ? "#" : ".";
+        const upRight = input.grid[`${x + 1}|${y - 1}`] ? "#" : ".";
+        const left = input.grid[`${x - 1}|${y}`] ? "#" : ".";
+        const center = input.grid[`${x}|${y}`] ? "#" : ".";
+        const right = input.grid[`${x + 1}|${y}`] ? "#" : ".";
+        const downLeft = input.grid[`${x - 1}|${y + 1}`] ? "#" : ".";
+        const down = input.grid[`${x}|${y + 1}`] ? "#" : ".";
+        const downRight = input.grid[`${x + 1}|${y + 1}`] ? "#" : ".";
+        const str = [
+            upLeft,
+            up,
+            upRight,
+            left,
+            center,
+            right,
+            downLeft,
+            down,
+            downRight
+        ]
+            .map(l => (l === "#" ? 1 : 0))
+            .join("");
+        const num = parseInt(str, 2);
+        // console.log(str, num);
+        return input.alg[num] as "#" | ".";
+    };
+
+    const enhance = () => {
+        const newGrid: Input["grid"] = {};
+
+        const minX = Math.min(
+            ...Object.keys(input.grid).map(l => Number(l.split("|")[0]))
+        );
+        const minY = Math.min(
+            ...Object.keys(input.grid).map(l => Number(l.split("|")[1]))
+        );
+        const maxX = Math.max(
+            ...Object.keys(input.grid).map(l => Number(l.split("|")[0]))
+        );
+        const maxY = Math.max(
+            ...Object.keys(input.grid).map(l => Number(l.split("|")[1]))
+        );
+
+        for (let i = minX - 3; i < maxX + 4; i++) {
+            for (let j = minY - 3; j < maxY + 4; j++) {
+                const enhanced = getEnhanced(i, j);
+                newGrid[`${i}|${j}`] = enhanced === "#";
+            }
+        }
+
+        return newGrid;
+    };
+
+    for (let i = 0; i < 50; i++) {
+        input.grid = enhance();
+    }
+
+    return Object.entries(input.grid)
+        .filter(l => {
+            const split = l[0].split("|").map(Number) as [number, number];
+            if (split[0] < -50 || split[1] < -50) {
+                return false;
+            }
+            if (split[0] > maxX_ + 50 || split[1] > maxY_ + 50) {
+                return false;
+            }
+            return true;
+        })
+        .filter(l => l[1] === true).length;
+};
+
+const part2 = (input: Input) => {
+    const maxX_ = Math.max(
+        ...Object.keys(input.grid).map(l => Number(l.split("|")[0]))
+    );
+    const maxY_ = Math.max(
+        ...Object.keys(input.grid).map(l => Number(l.split("|")[1]))
+    );
+
+    const getEnhanced = (x: number, y: number, def: "#" | "."): "#" | "." => {
+        const upLeft = input.grid[`${x - 1}|${y - 1}`] ? "#" : def;
+        const up = input.grid[`${x}|${y - 1}`] ? "#" : def;
+        const upRight = input.grid[`${x + 1}|${y - 1}`] ? "#" : def;
+        const left = input.grid[`${x - 1}|${y}`] ? "#" : def;
+        const center = input.grid[`${x}|${y}`] ? "#" : def;
+        const right = input.grid[`${x + 1}|${y}`] ? "#" : def;
+        const downLeft = input.grid[`${x - 1}|${y + 1}`] ? "#" : def;
+        const down = input.grid[`${x}|${y + 1}`] ? "#" : def;
+        const downRight = input.grid[`${x + 1}|${y + 1}`] ? "#" : def;
+        const str = [
+            upLeft,
+            up,
+            upRight,
+            left,
+            center,
+            right,
+            downLeft,
+            down,
+            downRight
+        ]
+            .map(l => (l === "#" ? 1 : 0))
+            .join("");
+        const num = parseInt(str, 2);
+        // console.log(str, num);
+        return input.alg[num] as "#" | ".";
+    };
+
+    const enhance = (iter: number) => {
+        let newGrid: Input["grid"] = {};
+
+        const minX = Math.min(
+            ...Object.keys(input.grid).map(l => Number(l.split("|")[0]))
+        );
+        const minY = Math.min(
+            ...Object.keys(input.grid).map(l => Number(l.split("|")[1]))
+        );
+        const maxX = Math.max(
+            ...Object.keys(input.grid).map(l => Number(l.split("|")[0]))
+        );
+        const maxY = Math.max(
+            ...Object.keys(input.grid).map(l => Number(l.split("|")[1]))
+        );
+
+        for (let i = minX - 2; i < maxX + 3; i++) {
+            for (let j = minY - 2; j < maxY + 3; j++) {
+                const enhanced = getEnhanced(i, j, iter % 2 === 0 ? "." : "#");
+                newGrid[`${i}|${j}`] = enhanced === "#";
+            }
+        }
+
+        newGrid = Object.fromEntries(
+            Object.entries(newGrid).filter(l => {
+                const split = l[0].split("|").map(Number) as [number, number];
+                if (split[0] < -iter - 1 || split[1] < -iter - 1) {
+                    return false;
+                }
+                if (
+                    split[0] > maxX_ + iter + 1 ||
+                    split[1] > maxY_ + iter + 1
+                ) {
+                    return false;
+                }
+                return true;
+            })
+        );
+
+        return newGrid;
+    };
+
+    for (let i = 0; i < 50; i++) {
+        input.grid = enhance(i);
+    }
+
+    return Object.entries(input.grid)
+        .filter(l => {
+            const split = l[0].split("|").map(Number) as [number, number];
+            if (split[0] < -50 || split[1] < -50) {
+                return false;
+            }
+            if (split[0] > maxX_ + 50 || split[1] > maxY_ + 50) {
+                return false;
+            }
+            return true;
+        })
+        .filter(l => l[1] === true).length;
 };
 
 const main = async () => {
-    const input = await readInputSplitNum(path.join(__dirname, "./input.txt"));
+    const raw = await readInputSplit(path.join(__dirname, "./input.txt"));
+    const inp: Partial<Input> = {};
+    inp.alg = raw.shift();
+    raw.shift();
+    const grid = raw.map(l => l.split(""));
+
+    const res: Record<string, boolean> = {};
+    for (let i = 0; i < grid.length; i++) {
+        for (let j = 0; j < grid.length; j++) {
+            res[`${j}|${i}`] = grid[i][j] === "#";
+        }
+    }
+    const input: Input = { ...inp, grid: res } as Input;
 
     console.time("part1");
 
-    part1(input);
+    // console.log(part1({ alg: input.alg, grid: { ...input.grid } }));
 
     console.timeEnd("part1");
 
     console.time("part2");
 
-    part2(input);
+    console.log(part2({ alg: input.alg, grid: { ...input.grid } }));
 
     console.timeEnd("part2");
 };
