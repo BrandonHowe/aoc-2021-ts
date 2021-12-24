@@ -1,0 +1,56 @@
+inp w
+div z 1
+add x 12
+add y 1
+inp w
+div z 1
+add x 13
+add y 9
+inp w
+div z 1
+add x 12
+add y 11
+inp w
+div z 26
+add x -13
+add y 6
+inp w
+div z 1
+add x 11
+add y 6
+inp w
+div z 1
+add x 15
+add y 13
+inp w
+div z 26
+add x -14
+add y 13
+inp w
+div z 1
+add x 12
+add y 5
+inp w
+div z 26
+add x -8
+add y 7
+inp w
+div z 1
+add x 14
+add y 2
+inp w
+div z 26
+add x -9
+add y 10
+inp w
+div z 26
+add x -11
+add y 14
+inp w
+div z 26
+add x -6
+add y 7
+inp w
+div z 26
+add x -5
+add y 1
